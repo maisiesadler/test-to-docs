@@ -14,9 +14,9 @@ public class RecordingFixture : IDisposable
         _onDispose = onDispose;
     }
 
-    public DelegatingHandler CreateHandler() => new RecordingHandler(request =>
+    public DelegatingHandler CreateHandler() => new RecordingHandler((request, response, exception) =>
     {
-        _recorded.Add(new RecordedCalls(request.Method, request.RequestUri?.AbsolutePath));
+        _recorded.Add(new RecordedCalls(request.Method, request.RequestUri?.AbsolutePath, response?.StatusCode));
     });
 
     public void Dispose()

@@ -23,7 +23,8 @@ public class GenerateOpenApiForWebApiTest : IClassFixture<TestFixture>
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon"));
+        var recorded = Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon"));
+        Assert.Equal(HttpStatusCode.NotFound, recorded.StatusCode);
     }
 
     [Fact]
@@ -37,6 +38,7 @@ public class GenerateOpenApiForWebApiTest : IClassFixture<TestFixture>
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon-thing"));
+        var recorded = Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon-thing"));
+        Assert.Equal(HttpStatusCode.NotFound, recorded.StatusCode);
     }
 }
