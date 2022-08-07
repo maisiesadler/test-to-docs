@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 namespace TestToDocs.Test;
 
 public class DetailsExportedAsOpenApiTests
@@ -19,6 +21,10 @@ public class DetailsExportedAsOpenApiTests
         // Assert
         var openApiSpec = recordingFixture.GenerateOpenApiDocument();
         var path = Assert.Single(openApiSpec.Paths);
+        Assert.Equal("/some-resource", path.Key);
+        var operation = Assert.Single(path.Value.Operations);
+        Assert.Equal(OperationType.Get, operation.Key);
+        Assert.NotNull(operation.Value);
     }
 
     [Fact]
@@ -39,5 +45,13 @@ public class DetailsExportedAsOpenApiTests
         // Assert
         var openApiSpec = recordingFixture.GenerateOpenApiDocument();
         var path = Assert.Single(openApiSpec.Paths);
+        Assert.Equal("/some-resource", path.Key);
+        Assert.Equal(2, path.Value.Operations.Count());
+        var hasGet = path.Value.Operations.TryGetValue(OperationType.Get, out var getOperation);
+        Assert.True(hasGet);
+        Assert.NotNull(getOperation);
+        var hasPost = path.Value.Operations.TryGetValue(OperationType.Get, out var postOperation);
+        Assert.True(hasPost);
+        Assert.NotNull(postOperation);
     }
 }
