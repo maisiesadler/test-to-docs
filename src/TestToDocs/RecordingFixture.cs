@@ -9,7 +9,7 @@ public class RecordingFixture : IDisposable
 
     public DelegatingHandler CreateHandler() => new RecordingHandler(request =>
     {
-        _recorded.Add(new RecordedCalls(request.RequestUri?.AbsolutePath));
+        _recorded.Add(new RecordedCalls(request.Method, request.RequestUri?.AbsolutePath));
     });
 
     public void Dispose()
