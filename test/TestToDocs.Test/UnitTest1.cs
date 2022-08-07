@@ -8,7 +8,7 @@ public class UnitTest1
     public async Task Test1()
     {
         // Arrange
-        var fixture = new TestFixture();
+        using var fixture = new TestFixture();
         var client = fixture.CreateRecordedClient();
 
         // Act
@@ -25,7 +25,7 @@ public class UnitTest1
     public async Task Test2()
     {
         // Arrange
-        var fixture = new TestFixture();
+        using var fixture = new TestFixture();
         var client = fixture.CreateRecordedClient();
 
         // Act

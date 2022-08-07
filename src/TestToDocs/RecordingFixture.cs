@@ -1,6 +1,6 @@
 namespace TestToDocs;
 
-public class RecordingFixture
+public class RecordingFixture : IDisposable
 {
     private readonly List<RecordedCalls> _recorded = new();
     public IReadOnlyList<RecordedCalls> Recorded => _recorded;
@@ -9,4 +9,12 @@ public class RecordingFixture
     {
         _recorded.Add(new RecordedCalls(request.RequestUri?.AbsolutePath));
     });
+
+    public void Dispose()
+    {
+        foreach (var call in _recorded)
+        {
+            System.Console.WriteLine(call.Path);
+        }
+    }
 }

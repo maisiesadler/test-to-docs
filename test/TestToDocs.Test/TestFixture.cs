@@ -19,9 +19,6 @@ public class TestFixture : WebApplicationFactory<Program>
     {
         base.Dispose(disposing);
 
-        foreach (var call in Recorded)
-        {
-            System.Console.WriteLine(call.Path);
-        }
+        _recordingFixture.Dispose();
     }
 }
