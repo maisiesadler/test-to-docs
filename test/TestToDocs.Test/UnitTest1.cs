@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace TestToDocs.Test;
 
 public class UnitTest1

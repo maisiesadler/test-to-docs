@@ -8,7 +8,7 @@ public class TestFixture : WebApplicationFactory<Program>
 {
     public IReadOnlyList<RecordedCalls> Recorded => _recordingFixture.Recorded;
     private readonly RecordingFixture _recordingFixture = new();
-    public HttpClient CreateRecordedClient() => this.CreateRecordedClient(_recordingFixture);
+    public HttpClient CreateRecordedClient() => this.CreateDefaultClient(_recordingFixture.CreateHandler());
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
