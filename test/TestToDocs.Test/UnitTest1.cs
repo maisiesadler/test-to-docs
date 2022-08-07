@@ -1,4 +1,4 @@
-using System.Net;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TestToDocs.Test;
 
@@ -8,33 +8,18 @@ public class UnitTest1
     public async Task Test1()
     {
         // Arrange
-        using var fixture = new TestFixture();
-        var client = fixture.CreateRecordedClient();
+        var recordingFixture = new RecordingFixture();
+        var handler = recordingFixture.CreateHandler();
+        var services = new ServiceCollection();
+        services.AddHttpClient("test").AddHttpMessageHandler(_ => handler);
+        var sp = services.BuildServiceProvider();
+        var client = sp.GetRequiredService<IHttpClientFactory>().CreateClient("test");
 
         // Act
-        var response = await client.GetAsync($"/pokemon");
+        var response = await client.GetAsync("https://example.com");
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-
-        var recorded = Assert.Single(fixture.Recorded);
-        Assert.Equal("/pokemon", recorded.Path);
-    }
-
-    [Fact]
-    public async Task Test2()
-    {
-        // Arrange
-        using var fixture = new TestFixture();
-        var client = fixture.CreateRecordedClient();
-
-        // Act
-        var response = await client.GetAsync($"/pokemon-thing");
-
-        // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-
-        var recorded = Assert.Single(fixture.Recorded);
-        Assert.Equal("/pokemon-thing", recorded.Path);
+        var recorded = Assert.Single(recordingFixture.Recorded);
+        Assert.Equal("/", recorded.Path);
     }
 }
