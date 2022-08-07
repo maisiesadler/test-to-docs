@@ -1,9 +1,9 @@
 namespace TestToDocs.Test;
 
-public class UnitTest1
+public class RecordedDetailsTests
 {
     [Fact]
-    public async Task Test1()
+    public async Task PathIsRecordedCorrectly()
     {
         // Arrange
         var recordingFixture = new RecordingFixture();

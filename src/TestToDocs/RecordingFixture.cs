@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 namespace TestToDocs;
 
 public class RecordingFixture : IDisposable
@@ -17,4 +19,6 @@ public class RecordingFixture : IDisposable
             System.Console.WriteLine(call.Path);
         }
     }
+
+    public OpenApiDocument GenerateOpenApiDocument() => RecordedCallsAsOpenApiSpec.CreateOpenApi(this);
 }
