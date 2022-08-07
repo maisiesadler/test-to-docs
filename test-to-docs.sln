@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApi", "example\Example.WebApi.csproj", "{7042AFEF-1F76-410A-8819-4DBB345013BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApi", "example\Example.WebApi\Example.WebApi.csproj", "{7042AFEF-1F76-410A-8819-4DBB345013BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestToDocs.Test", "test\TestToDocs.Test.csproj", "{EF76EC70-80E4-4E12-B77A-3FB9C615BFA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestToDocs.Test", "test\TestToDocs.Test\TestToDocs.Test.csproj", "{EF76EC70-80E4-4E12-B77A-3FB9C615BFA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestToDocs", "src\TestToDocs.csproj", "{297B0289-17B5-4D3E-B9E2-B325DEC494DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestToDocs", "src\TestToDocs\TestToDocs.csproj", "{297B0289-17B5-4D3E-B9E2-B325DEC494DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
