@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\example\Example.WebApi.csproj" />
+    <ProjectReference Include="..\src\TestToDocs.csproj" />
   </ItemGroup>
 
 </Project>
