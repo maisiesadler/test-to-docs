@@ -4,22 +4,11 @@ using Example.WebApi;
 
 namespace TestToDocs.Test;
 
-public class RecordingHandler : DelegatingHandler
-{
-    public List<RecordedCalls> Recorded = new();
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        Recorded.Add(new RecordedCalls(request.RequestUri?.AbsolutePath));
-        return base.SendAsync(request, cancellationToken);
-    }
-}
-
 public class TestFixture : WebApplicationFactory<Program>
 {
-    public List<RecordedCalls> Recorded => _recordingHandler.Recorded;
-    private readonly RecordingHandler _recordingHandler = new();
-
-    public HttpClient CreateRecordedClient() => CreateDefaultClient(_recordingHandler);
+    public IReadOnlyList<RecordedCalls> Recorded => _recordingFixture.Recorded;
+    private readonly RecordingFixture _recordingFixture = new();
+    public HttpClient CreateRecordedClient() => this.CreateRecordedClient(_recordingFixture);
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -36,5 +25,3 @@ public class TestFixture : WebApplicationFactory<Program>
         }
     }
 }
-
-public record RecordedCalls(string? Path);
