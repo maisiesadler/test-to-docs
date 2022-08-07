@@ -5,7 +5,14 @@ namespace TestToDocs;
 public class RecordingFixture : IDisposable
 {
     private readonly List<RecordedCalls> _recorded = new();
+    private readonly Action<OpenApiDocument>? _onDispose;
+
     public IReadOnlyList<RecordedCalls> Recorded => _recorded;
+
+    public RecordingFixture(Action<OpenApiDocument>? onDispose = null)
+    {
+        _onDispose = onDispose;
+    }
 
     public DelegatingHandler CreateHandler() => new RecordingHandler(request =>
     {
@@ -14,10 +21,7 @@ public class RecordingFixture : IDisposable
 
     public void Dispose()
     {
-        foreach (var call in _recorded)
-        {
-            System.Console.WriteLine(call.Path);
-        }
+        _onDispose?.Invoke(GenerateOpenApiDocument());
     }
 
     public OpenApiDocument GenerateOpenApiDocument() => RecordedCallsAsOpenApiSpec.CreateOpenApi(this);

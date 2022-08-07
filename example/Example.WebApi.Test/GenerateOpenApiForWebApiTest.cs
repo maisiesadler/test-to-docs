@@ -2,14 +2,20 @@ using System.Net;
 
 namespace TestToDocs.Test;
 
-public class UnitTest1
+public class GenerateOpenApiForWebApiTest : IClassFixture<TestFixture>
 {
+    public TestFixture _testFixture;
+
+    public GenerateOpenApiForWebApiTest(TestFixture testFixture)
+    {
+        _testFixture = testFixture;
+    }
+
     [Fact]
     public async Task Test1()
     {
         // Arrange
-        using var fixture = new TestFixture();
-        var client = fixture.CreateRecordedClient();
+        var client = _testFixture.CreateRecordedClient();
 
         // Act
         var response = await client.GetAsync($"/pokemon");
@@ -17,24 +23,20 @@ public class UnitTest1
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        var recorded = Assert.Single(fixture.Recorded);
-        Assert.Equal("/pokemon", recorded.Path);
+        Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon"));
     }
 
     [Fact]
     public async Task Test2()
     {
         // Arrange
-        using var fixture = new TestFixture();
-        var client = fixture.CreateRecordedClient();
+        var client = _testFixture.CreateRecordedClient();
 
         // Act
         var response = await client.GetAsync($"/pokemon-thing");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-
-        var recorded = Assert.Single(fixture.Recorded);
-        Assert.Equal("/pokemon-thing", recorded.Path);
+        Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon-thing"));
     }
 }
