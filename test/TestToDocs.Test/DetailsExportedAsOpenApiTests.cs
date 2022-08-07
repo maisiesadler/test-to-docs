@@ -14,7 +14,7 @@ public class DetailsExportedAsOpenApiTests
         var client = sp.GetRequiredService<IHttpClientFactory>().CreateClient("test");
 
         // Act
-        var response = await client.GetAsync("https://example.com");
+        await client.TrySendAsync(HttpMethod.Get, "/some-resource"); 
 
         // Assert
         var openApiSpec = recordingFixture.GenerateOpenApiDocument();
