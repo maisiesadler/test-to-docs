@@ -54,4 +54,30 @@ public class DetailsExportedAsOpenApiTests
         Assert.True(hasPost);
         Assert.NotNull(postOperation);
     }
+
+    [Fact]
+    public async Task StatusCodeRecorded()
+    {
+        // Arrange
+        var recordingFixture = new RecordingFixture();
+        var handler = recordingFixture.CreateHandler();
+        var services = new ServiceCollection();
+        services.AddHttpClient("test").AddHttpMessageHandler(_ => handler);
+        var sp = services.BuildServiceProvider();
+        var client = sp.GetRequiredService<IHttpClientFactory>().CreateClient("test");
+
+        // Act
+        await client.TrySendAsync(HttpMethod.Get, new Uri("https://example.com/some-resource"));
+
+        // Assert
+        var openApiSpec = recordingFixture.GenerateOpenApiDocument();
+        var path = Assert.Single(openApiSpec.Paths);
+        Assert.Equal("/some-resource", path.Key);
+        var operation = Assert.Single(path.Value.Operations);
+        Assert.Equal(OperationType.Get, operation.Key);
+        var response = Assert.Single(operation.Value.Responses);
+        Assert.Equal("404", response.Key);
+        var content = Assert.Single(response.Value.Content);
+        Assert.Equal("text/html; charset=utf-8", content.Key);
+    }
 }

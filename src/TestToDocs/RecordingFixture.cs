@@ -16,8 +16,17 @@ public class RecordingFixture : IDisposable
 
     public DelegatingHandler CreateHandler() => new RecordingHandler((request, response, exception) =>
     {
-        _recorded.Add(new RecordedCalls(request.Method, request.RequestUri?.AbsolutePath, response?.StatusCode));
+        var contentType = GetContentType(response);
+        _recorded.Add(new RecordedCalls(request.Method, request.RequestUri?.AbsolutePath, response?.StatusCode, contentType));
     });
+
+    private static string? GetContentType(HttpResponseMessage? responseMessage)
+    {
+        if (responseMessage?.Content == null) return null;
+        if (!responseMessage.Content.Headers.TryGetValues("Content-Type", out var contentHeaders)) return null;
+
+        return string.Join("", contentHeaders);
+    }
 
     public void Dispose()
     {

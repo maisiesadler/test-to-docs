@@ -19,6 +19,13 @@ internal class RecordedCallsAsOpenApiSpec
             var operationType = AsOperationType(recordedCall.HttpMethod);
             if (!doc.Paths[recordedCall.Path].Operations.ContainsKey(operationType))
                 doc.Paths[recordedCall.Path].Operations.Add(operationType, new OpenApiOperation());
+
+            var response = new OpenApiResponse();
+            if (recordedCall.ResponseContentType != null)
+            {
+                response.Content[recordedCall.ResponseContentType] = new OpenApiMediaType();
+            }
+            doc.Paths[recordedCall.Path].Operations[operationType].Responses.Add(((int?)recordedCall.StatusCode).ToString(), response);
         }
 
         return doc;

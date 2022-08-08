@@ -3,7 +3,11 @@ info: { }
 paths:
   /pokemon-thing:
     get:
-      responses: { }
+      responses:
+        '404':
+          description: 
   /pokemon:
     get:
-      responses: { }
+      responses:
+        '404':
+          description: 
