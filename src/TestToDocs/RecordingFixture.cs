@@ -4,10 +4,10 @@ namespace TestToDocs;
 
 public class RecordingFixture : IDisposable
 {
-    private readonly List<RecordedCalls> _recorded = new();
+    private readonly List<RecordedCall> _recorded = new();
     private readonly Action<OpenApiDocument>? _onDispose;
 
-    public IReadOnlyList<RecordedCalls> Recorded => _recorded;
+    public IReadOnlyList<RecordedCall> Recorded => _recorded;
 
     public RecordingFixture(Action<OpenApiDocument>? onDispose = null)
     {
@@ -17,7 +17,7 @@ public class RecordingFixture : IDisposable
     public DelegatingHandler CreateHandler() => new RecordingHandler((request, response, exception) =>
     {
         var contentType = GetContentType(response);
-        _recorded.Add(new RecordedCalls(request.Method, request.RequestUri?.AbsolutePath, response?.StatusCode, contentType));
+        _recorded.Add(new RecordedCall(request.Method, request.RequestUri?.AbsolutePath, response?.StatusCode, contentType));
     });
 
     private static string? GetContentType(HttpResponseMessage? responseMessage)

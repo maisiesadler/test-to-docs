@@ -2,4 +2,4 @@ using System.Net;
 
 namespace TestToDocs;
 
-public record RecordedCalls(HttpMethod HttpMethod, string? Path, HttpStatusCode? StatusCode, string? ResponseContentType);
+public record RecordedCall(HttpMethod HttpMethod, string? Path, HttpStatusCode? StatusCode, string? ResponseContentType);

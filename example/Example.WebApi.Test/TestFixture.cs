@@ -7,7 +7,7 @@ namespace TestToDocs.Test;
 
 public class TestFixture : WebApplicationFactory<Program>
 {
-    public IReadOnlyList<RecordedCalls> Recorded => _recordingFixture.Recorded;
+    public IReadOnlyList<RecordedCall> Recorded => _recordingFixture.Recorded;
     private readonly RecordingFixture _recordingFixture = new(x =>
     {
         string fileLocation = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../example-spec.yaml");
