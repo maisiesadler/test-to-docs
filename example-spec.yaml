@@ -1,13 +1,10 @@
 openapi: 3.0.1
 info: { }
 paths:
-  /pokemon-thing:
+  /not-found:
     get:
       responses:
         '404':
           description: 
-  /pokemon:
-    get:
-      responses:
-        '404':
-          description: 
+          content:
+            application/json; charset=utf-8: { }

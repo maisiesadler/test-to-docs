@@ -7,7 +7,7 @@ public class RecordingFixture : IDisposable
     private readonly List<RecordedCall> _recorded = new();
     private readonly Action<OpenApiDocument>? _onDispose;
 
-    public IReadOnlyList<RecordedCall> Recorded => _recorded;
+    internal IReadOnlyList<RecordedCall> Recorded => _recorded;
 
     public RecordingFixture(Action<OpenApiDocument>? onDispose = null)
     {

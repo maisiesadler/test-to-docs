@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace TestToDocs.Test;
 
 public class TestFixture : WebApplicationFactory<Program>
 {
-    public IReadOnlyList<RecordedCall> Recorded => _recordingFixture.Recorded;
+    public OpenApiDocument GenerateOpenApiDocument() => _recordingFixture.GenerateOpenApiDocument();
     private readonly RecordingFixture _recordingFixture = new(x =>
     {
         string fileLocation = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../example-spec.yaml");
