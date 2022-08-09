@@ -2,14 +2,14 @@ namespace TestToDocs.Test;
 
 public static class HttpClientExtensions
 {
-    public static async Task<HttpResponseMessage?> TrySendAsync(
-        this HttpClient httpClient,
-        HttpMethod httpMethod,
-        string path)
+    public static Task<HttpResponseMessage?> TrySendAsync(this HttpClient httpClient, HttpMethod httpMethod, string path)
+        => httpClient.TrySendAsync(httpMethod, new Uri("https://example.local" + path));
+
+    public static async Task<HttpResponseMessage?> TrySendAsync(this HttpClient httpClient, HttpMethod httpMethod, Uri uri)
     {
         var request = new HttpRequestMessage
         {
-            RequestUri = new Uri("https://example.local" + path),
+            RequestUri = uri,
             Method = httpMethod,
         };
         return await httpClient.TrySendAsync(request);

@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 
 namespace TestToDocs;
@@ -13,15 +14,36 @@ internal class RecordedCallsAsOpenApiSpec
 
         foreach (var recordedCall in recordingFixture.Recorded)
         {
-            if (!doc.Paths.ContainsKey(recordedCall.Path))
-                doc.Paths.Add(recordedCall.Path, new OpenApiPathItem { });
-
-            var operationType = AsOperationType(recordedCall.HttpMethod);
-            if (!doc.Paths[recordedCall.Path].Operations.ContainsKey(operationType))
-                doc.Paths[recordedCall.Path].Operations.Add(operationType, new OpenApiOperation());
+            if (recordedCall.Path != null)
+            {
+                var pathItem = GetOrAdd(doc.Paths, recordedCall.Path);
+                TryRecordPath(pathItem, recordedCall);
+            }
         }
 
         return doc;
+    }
+
+    private static void TryRecordPath(OpenApiPathItem pathItem, RecordedCall recordedCall)
+    {
+        var operationType = AsOperationType(recordedCall.HttpMethod);
+        var operation = GetOrAdd(pathItem.Operations, operationType);
+
+        var response = new OpenApiResponse();
+        if (recordedCall.ResponseContentType != null)
+        {
+            response.Content[recordedCall.ResponseContentType] = new OpenApiMediaType();
+        }
+        operation.Responses.Add(((int?)recordedCall.StatusCode).ToString(), response);
+    }
+
+    private static TValue GetOrAdd<TKey, TValue>(IDictionary<TKey, TValue> dict, TKey key)
+        where TValue : IOpenApiSerializable, new()
+    {
+        if (!dict.ContainsKey(key))
+            dict[key] = new();
+
+        return dict[key];
     }
 
     private static OperationType AsOperationType(HttpMethod httpMethod)

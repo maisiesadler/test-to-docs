@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.OpenApi.Models;
 
 namespace TestToDocs.Test;
 
@@ -18,25 +19,22 @@ public class GenerateOpenApiForWebApiTest : IClassFixture<TestFixture>
         var client = _testFixture.CreateRecordedClient();
 
         // Act
-        var response = await client.GetAsync($"/pokemon");
+        var response = await client.GetAsync("/not-found");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon"));
-    }
+        var document = _testFixture.GenerateOpenApiDocument();
+        var (pathKey, pathValue) = Assert.Single(document.Paths);
+        Assert.Equal("/not-found", pathKey);
 
-    [Fact]
-    public async Task Test2()
-    {
-        // Arrange
-        var client = _testFixture.CreateRecordedClient();
+        var (operationType, operationValue) = Assert.Single(pathValue.Operations);
+        Assert.Equal(OperationType.Get, operationType);
 
-        // Act
-        var response = await client.GetAsync($"/pokemon-thing");
+        var (responseStatus, responseValue) = Assert.Single(operationValue.Responses);
+        Assert.Equal("404", responseStatus);
 
-        // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Single(_testFixture.Recorded.Where(r => r.Path == "/pokemon-thing"));
+        var (contentType, contentValue) = Assert.Single(responseValue.Content);
+        Assert.Equal("application/json; charset=utf-8", contentType);
     }
 }
