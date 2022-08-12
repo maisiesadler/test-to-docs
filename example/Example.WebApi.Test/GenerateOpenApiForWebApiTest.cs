@@ -36,5 +36,11 @@ public class GenerateOpenApiForWebApiTest : IClassFixture<TestFixture>
 
         var (contentType, contentValue) = Assert.Single(responseValue.Content);
         Assert.Equal("application/json; charset=utf-8", contentType);
+
+        Assert.Equal("object", contentValue.Schema.Type);
+        var (propertyName, propertySchema) = Assert.Single(contentValue.Schema.Properties);
+
+        Assert.Equal("wtf", propertyName);
+        Assert.Equal("string", propertySchema.Type);
     }
 }

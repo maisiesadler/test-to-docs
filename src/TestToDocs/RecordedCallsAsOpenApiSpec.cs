@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 
@@ -30,11 +32,67 @@ internal class RecordedCallsAsOpenApiSpec
         var operation = GetOrAdd(pathItem.Operations, operationType);
 
         var response = new OpenApiResponse();
-        if (recordedCall.ResponseContentType != null)
+        if (TryGetContentType(recordedCall, out var openApiMediaType))
         {
-            response.Content[recordedCall.ResponseContentType] = new OpenApiMediaType();
+            response.Content[recordedCall.ResponseContentType] = openApiMediaType;
         }
         operation.Responses.Add(((int?)recordedCall.StatusCode).ToString(), response);
+    }
+
+    private static bool TryGetContentType(RecordedCall recordedCall, [NotNullWhen(true)] out OpenApiMediaType? openApiMediaType)
+    {
+        if (recordedCall.ResponseContentType == null || recordedCall.Content == null)
+        {
+            openApiMediaType = null;
+            return false;
+        }
+
+        if (recordedCall.ResponseContentType.StartsWith("application/json"))
+        {
+            var content = JsonDocument.Parse(recordedCall.Content);
+            if (content == null)
+            {
+                openApiMediaType = null;
+                return false;
+            }
+
+            openApiMediaType = new OpenApiMediaType
+            {
+                Schema = new OpenApiSchema
+                {
+                    Properties = new Dictionary<string, OpenApiSchema>(),
+                    Type = "object",
+                },
+            };
+            foreach (var property in content.RootElement.EnumerateObject())
+            {
+                openApiMediaType.Schema.Properties[property.Name] = new OpenApiSchema { Type = GetType(property.Value) };
+            }
+            return true;
+        }
+
+        if (recordedCall.ResponseContentType.StartsWith("text/html"))
+        {
+            openApiMediaType = new OpenApiMediaType
+            {
+                Schema = new OpenApiSchema
+                {
+                    Properties = new Dictionary<string, OpenApiSchema>(),
+                    Type = "string",
+                },
+            };
+            return true;
+        }
+
+        openApiMediaType = null;
+        return false;
+    }
+
+    private static string GetType(JsonElement jsonElement)
+    {
+        if (jsonElement.ValueKind == JsonValueKind.String) return "string";
+
+        throw new InvalidOperationException($"Idk about {jsonElement.ValueKind}");
     }
 
     private static TValue GetOrAdd<TKey, TValue>(IDictionary<TKey, TValue> dict, TKey key)

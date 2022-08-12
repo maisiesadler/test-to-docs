@@ -7,4 +7,9 @@ paths:
         '404':
           description: 
           content:
-            application/json; charset=utf-8: { }
+            application/json; charset=utf-8:
+              schema:
+                type: object
+                properties:
+                  wtf:
+                    type: string
