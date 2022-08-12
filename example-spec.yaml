@@ -1,6 +1,21 @@
 openapi: 3.0.1
 info: { }
 paths:
+  /nested-response:
+    get:
+      responses:
+        '200':
+          description: 
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: object
+                properties:
+                  this:
+                    type: object
+                    properties:
+                      isNested:
+                        type: number
   /not-found:
     get:
       responses:

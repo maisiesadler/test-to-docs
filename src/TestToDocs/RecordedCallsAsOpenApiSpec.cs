@@ -58,16 +58,9 @@ internal class RecordedCallsAsOpenApiSpec
 
             openApiMediaType = new OpenApiMediaType
             {
-                Schema = new OpenApiSchema
-                {
-                    Properties = new Dictionary<string, OpenApiSchema>(),
-                    Type = "object",
-                },
+                Schema = GetOpenApiSchema(content.RootElement),
             };
-            foreach (var property in content.RootElement.EnumerateObject())
-            {
-                openApiMediaType.Schema.Properties[property.Name] = new OpenApiSchema { Type = GetType(property.Value) };
-            }
+
             return true;
         }
 
@@ -88,11 +81,34 @@ internal class RecordedCallsAsOpenApiSpec
         return false;
     }
 
+    private static OpenApiSchema GetOpenApiSchema(JsonElement jsonElement)
+    {
+        var schema = new OpenApiSchema
+        {
+            Properties = new Dictionary<string, OpenApiSchema>(),
+            Type = GetType(jsonElement),
+        };
+
+        if (jsonElement.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in jsonElement.EnumerateObject())
+            {
+                schema.Properties[property.Name] = GetOpenApiSchema(property.Value);
+            }
+        }
+
+        return schema;
+    }
+
     private static string GetType(JsonElement jsonElement)
     {
-        if (jsonElement.ValueKind == JsonValueKind.String) return "string";
-
-        throw new InvalidOperationException($"Idk about {jsonElement.ValueKind}");
+        return jsonElement.ValueKind switch
+        {
+            JsonValueKind.String => "string",
+            JsonValueKind.Object => "object",
+            JsonValueKind.Number => "number",
+            _ => throw new InvalidOperationException($"Idk about {jsonElement.ValueKind}"),
+        };
     }
 
     private static TValue GetOrAdd<TKey, TValue>(IDictionary<TKey, TValue> dict, TKey key)
